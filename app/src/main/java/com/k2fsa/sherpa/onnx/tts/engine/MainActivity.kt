@@ -507,7 +507,11 @@ class MainActivity : ComponentActivity() {
                                             contentColor = colorResource(R.color.white)
                                         ),
                                         onClick = {
-                                            if (sampleText.isBlank() || sampleText.isEmpty()) {
+                                            var textToSpeak = sampleText
+                                            if (preferenceHelper.getStripSSML()) textToSpeak = TtsEngine.stripSsmlTags(textToSpeak)
+                                            textToSpeak = TtsEngine.stripJapanese(textToSpeak)
+
+                                            if (textToSpeak.isBlank()) {
                                                 Toast.makeText(
                                                     applicationContext,
                                                     getString(R.string.input),
@@ -536,11 +540,9 @@ class MainActivity : ComponentActivity() {
                                                     }
                                                 }
 
-                                                if (preferenceHelper.getStripSSML()) sampleText = TtsEngine.stripSsmlTags(sampleText)
-
                                                 CoroutineScope(Dispatchers.Default).launch {
                                                     TtsEngine.tts!!.generateWithCallback(
-                                                        text = sampleText,
+                                                        text = textToSpeak,
                                                         sid = TtsEngine.speakerId.value,
                                                         speed = TtsEngine.speed.value,
                                                         callback = ::callback,

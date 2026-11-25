@@ -93,7 +93,7 @@ class TtsService : TextToSpeechService() {
         var text = request.charSequenceText.toString()
 
         if (preferenceHelper.getStripSSML()) text = TtsEngine.stripSsmlTags(text)
-
+        text = TtsEngine.stripJapanese(text)
 
 
         val tts = TtsEngine.tts!!

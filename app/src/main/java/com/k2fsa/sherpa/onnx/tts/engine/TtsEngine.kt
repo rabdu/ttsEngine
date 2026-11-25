@@ -49,6 +49,17 @@ object TtsEngine {
         return Jsoup.parse(text).text().trim()
     }
 
+    private val cjkRegex = Regex(
+        "(?i)(\\bonto\\s+)?[\\p{IsHan}\\p{IsHiragana}\\p{IsKatakana}\\u3000-\\u303F\\u30FB-\\u30FC\\uFF65-\\uFF9F]+"
+    )
+
+    fun stripJapanese(text: String): String {
+        if (lang?.startsWith("en", ignoreCase = true) != true) return text
+        return text.replace(cjkRegex, "")
+            .replace(Regex("\\s{2,}"), " ")
+            .trim()
+    }
+
     @JvmStatic
     fun createTts(context: Context, language: String) {
         if (tts == null || lang != language) {
